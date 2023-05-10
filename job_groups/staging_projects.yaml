@@ -100,6 +100,8 @@ scenarios:
       - RAID0_gpt
       - RAID1_gpt:
           machine: 64bit
+          settings:
+            YAML_SCHEDULE: schedule/yast/opensuse/raid/raid1_gpt_leap.yaml
     opensuse-Core-Staging-DVD-x86_64:
       - textmode:
           machine: 64bit
@@ -122,6 +124,8 @@ scenarios:
       # - lvm+RAID1
       - RAID1_gpt:
           machine: 64bit
+          settings:
+            YAML_SCHEDULE: schedule/yast/opensuse/raid/raid1_gpt_leap.yaml
     opensuse-*-Staging-JeOS-for-kvm-and-xen-x86_64:
       - jeos:
           machine: uefi-staging-virtio-2G
