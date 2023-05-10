@@ -364,6 +364,8 @@ scenarios:
           machine: 64bit
       - RAID1_gpt:
           machine: 64bit
+          settings:
+            YAML_SCHEDULE: schedule/yast/opensuse/raid/raid1_gpt_leap.yaml
       - RAID5_gpt:
           machine: 64bit
           settings:
