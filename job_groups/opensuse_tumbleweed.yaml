@@ -217,9 +217,7 @@ scenarios:
       - create_hdd_gnome_wicked
       - create_hdd_kde:
           priority: 45
-      - lvm+RAID1:
-          settings:
-            YAML_TEST_DATA: test_data/yast/opensuse/lvm+raid1.yaml
+      - lvm+RAID1
       - boot_to_snapshot
       - yast2_firstboot
       - yast2_firstboot_custom
