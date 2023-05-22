@@ -39,7 +39,10 @@ scenarios:
       - autoyast_leap_videomode_text
       - create_hdd_leap_gnome_autoyast
       - create_hdd_leap_kde_autoyast
-      - create_hdd_leap_textmode_autoyast
+      - create_hdd_leap_textmode_autoyast:
+          settings:
+            # Workaround for boo#1211459 [Leap 15.4 only]
+            EXCLUDE_MODULES: force_scheduled_tasks
       - create_hdd_leap_transactional_server_autoyast
       - create_hdd_leap_gnome_uefi_autoyast:
           machine: 'uefi'
@@ -175,6 +178,8 @@ scenarios:
             # *console/zypper_{ar,ref}* replaced by console/zypper_add_repos
             # *transactional/install_updates* to apply updates on transactional system
             +YAML_SCHEDULE: ''
+            # Workaround for boo#1211459 [Leap 15.4 only]
+            EXCLUDE_MODULES: force_scheduled_tasks
       - extra_tests_transactional_server:
           testsuite: 'extra_tests_transactional_server'
           settings:
