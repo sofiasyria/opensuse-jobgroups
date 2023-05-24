@@ -213,6 +213,8 @@ elif args.action == 'fetch':
 			template = job_group['template']
 			filename = 'job_groups/%s.yaml' % gname
 			header = generate_header(filename)
+			if template == None:
+				template = "---\nproducts: {}\nscenarios: {}\n"
 			if not (template.startswith(header) or template.startswith("---\n"+header)):
 				template = generate_header(filename) + "\n" + template
 			open(filename, 'w').write(template)
