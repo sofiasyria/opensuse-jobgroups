@@ -1,0 +1,163 @@
+---
+############################################################
+#                         WARNING                          #
+#                                                          #
+#               This file is managed in GIT!               #
+#  Any changes via the openQA WebUI will get overwritten!  #
+#                                                          #
+#    https://github.com/os-autoinst/opensuse-jobgroups     #
+#        job_groups/opensuse_leap_15.5_updates.yaml        #
+############################################################
+
+.zdup_settings: &zdup
+  +ISO: "openSUSE-Leap-15.5-DVD-x86_64.iso"
+  ZDUPREPOS: >
+    http://download.opensuse.org/distribution/leap/15.5/repo/oss/,
+    http://download.opensuse.org/update/leap/15.5/oss/,
+    http://download.opensuse.org/update/leap/15.5/backports/,
+    http://download.opensuse.org/update/leap/15.5/sle/
+
+defaults:
+  x86_64:
+    machine: 64bit
+    priority: 50
+  aarch64:
+    machine: aarch64
+    priority: 50
+products:
+  opensuse-15.5-DVD-Updates-x86_64:
+    distri: opensuse
+    flavor: DVD-Updates
+    version: '15.5'
+scenarios:
+  x86_64:
+    opensuse-15.5-DVD-Updates-x86_64:
+      - autoyast_leap_videomode_text
+      - create_hdd_leap_gnome_autoyast
+      - create_hdd_leap_kde_autoyast
+      - create_hdd_leap_textmode_autoyast
+      - create_hdd_leap_transactional_server_autoyast
+      - create_hdd_leap_gnome_uefi_autoyast:
+          machine: 'uefi'
+          testsuite: 'create_hdd_leap_gnome_autoyast'
+          settings:
+            UEFI_PFLASH_VARS: 'ovmf-x86_64-ms-vars-800x600.qcow2'
+      - create_hdd_leap_kde_uefi_autoyast:
+          machine: 'uefi'
+          testsuite: 'create_hdd_leap_kde_autoyast'
+          settings:
+            UEFI_PFLASH_VARS: 'ovmf-x86_64-ms-vars-800x600.qcow2'
+      - create_hdd_leap_textmode_uefi_autoyast:
+          machine: 'uefi'
+          testsuite: 'create_hdd_leap_textmode_autoyast'
+          settings:
+            UEFI_PFLASH_VARS: 'ovmf-x86_64-ms-vars-800x600.qcow2'
+      - textmode
+      - cryptlvm:
+          settings:
+            YAML_SCHEDULE: schedule/yast/opensuse/encryption/cryptlvm.yaml
+      - create_hdd_gnome
+      - create_hdd_kde
+      - create_hdd_textmode
+      - extra_tests_on_kde:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_kde_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - extra_tests_textmode:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_textmode_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+            EXCLUDE_MODULES: 'autoyast_removed'
+      - extra_tests_webserver:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_textmode_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - extra_tests_gnome:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_gnome_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - extra_tests_filesystem:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_textmode_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - gnuhealth:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_gnome_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - toolkits:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_gnome_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - openqa_bootstrap:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_gnome_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      # poo#107242
+      # - openqa_bootstrap_container
+      - extra_tests_misc:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_gnome_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - extra_tests_leap_update_textmode_2
+      - extra_tests_leap_update_gnome_uefi:
+          machine: 'uefi'
+      - extra_tests_leap_update_kde_uefi:
+          machine: 'uefi'
+      - zdup-Leap-15.4-gnome:
+          settings:
+            <<: *zdup
+            QEMU_VIRTIO_RNG: "0"
+      - zdup-Leap-15.4-kde:
+          settings:
+            <<: *zdup
+            QEMU_VIRTIO_RNG: "0"
+      - upgrade_Leap_15.4_gnome:
+          settings:
+            QEMU_VIRTIO_RNG: "0"
+      - upgrade_Leap_15.4_kde:
+          settings:
+            QEMU_VIRTIO_RNG: "0"
+      - upgrade_Leap_15.4_cryptlvm:
+          machine: uefi
+          settings:
+            QEMU_VIRTIO_RNG: "0"
+      - apparmor:
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_textmode_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - extra_tests_textmode_podman_containers:
+          testsuite: extra_tests_textmode_containers
+          settings:
+            CONTAINER_RUNTIME: 'podman'
+            START_AFTER_TEST: 'create_hdd_leap_textmode_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - extra_tests_textmode_kubectl_containers:
+          testsuite: extra_tests_textmode_containers
+          settings:
+            CONTAINER_RUNTIME: 'kubectl'
+            START_AFTER_TEST: 'create_hdd_leap_textmode_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - extra_tests_textmode_docker_containers:
+          testsuite: extra_tests_textmode_containers
+          settings:
+            CONTAINER_RUNTIME: 'docker'
+            START_AFTER_TEST: 'create_hdd_leap_textmode_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
+      - create_hdd_transactional_server:
+          settings:
+            # use main.pm schedule over YAML as it is used among other create_hdd test suite in updates testing
+            # YAML schedule requires several changes to be used for updates testing
+            # *update/zypper_clear_repos* should be omitted
+            # *console/zypper_{ar,ref}* replaced by console/zypper_add_repos
+            # *transactional/install_updates* to apply updates on transactional system
+            +YAML_SCHEDULE: ''
+      - extra_tests_transactional_server:
+          testsuite: 'extra_tests_transactional_server'
+          settings:
+            START_AFTER_TEST: 'create_hdd_leap_transactional_server_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_serverro_ay@%MACHINE%.qcow2'
+      - security_audit:
+          settings:
+            YAML_SCHEDULE: schedule/security/audit.yaml
+            START_AFTER_TEST: 'create_hdd_leap_textmode_autoyast'
+            HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%_ay@%MACHINE%.qcow2'
